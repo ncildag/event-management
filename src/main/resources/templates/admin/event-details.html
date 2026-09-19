@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Event Details</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Event Details</h1>
+
+
+    <!-- ====================================== -->
+    <!-- EVENT STATUS -->
+    <!-- ====================================== -->
+
+    <div th:if="${event.status.name()=='OPEN'}"
+         class="status-open">
+
+        <h3>🟢 Event is OPEN</h3>
+
+        Registration is currently allowed.
+
+    </div>
+
+
+    <div th:if="${event.status.name()=='CLOSED'}"
+         class="status-closed">
+
+        <h3>🔴 Event is CLOSED</h3>
+
+        Registration is currently disabled.
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- EVENT INFORMATION -->
+    <!-- ====================================== -->
+
+    <p class="info">
+
+        <strong>ID :</strong>
+
+        <span th:text="${event.id}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Event Name :</strong>
+
+        <span th:text="${event.eventName}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Date :</strong>
+
+        <span th:text="${event.date}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Time :</strong>
+
+        <span th:text="${event.time}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Address :</strong>
+
+        <span th:text="${event.address}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Important Information :</strong>
+
+        <span th:text="${event.importantInformation}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Capacity :</strong>
+
+        <span th:text="${event.numberOfAttendees}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Event Code :</strong>
+
+        <span th:text="${event.eventCode}"></span>
+
+    </p>
+
+
+    <p class="info">
+
+        <strong>Final Acceptance Date :</strong>
+
+        <span th:text="${event.finalAcceptanceDate}"></span>
+
+    </p>
+
+
+    <!-- ====================================== -->
+    <!-- EVENT ACTIONS -->
+    <!-- ====================================== -->
+
+    <div class="action-container">
+
+
+        <!-- ====================================== -->
+        <!-- EDIT EVENT -->
+        <!-- ====================================== -->
+
+        <a class="btn btn-blue"
+           th:href="@{/admin/events/{id}/edit(id=${event.id})}">
+
+            Edit Event
+
+        </a>
+
+
+        <!-- ====================================== -->
+        <!-- DELETE EVENT -->
+        <!-- ====================================== -->
+
+        <form th:action="@{/admin/events/{id}/delete(id=${event.id})}"
+              method="post"
+              onsubmit="return confirm('Are you sure you want to delete this event?');">
+
+            <button type="submit"
+                    class="btn btn-red">
+
+                Delete Event
+
+            </button>
+
+        </form>
+
+
+        <!-- ====================================== -->
+        <!-- CLOSE EVENT -->
+        <!-- Only visible when event is OPEN -->
+        <!-- ====================================== -->
+
+        <form th:if="${event.status.name()=='OPEN'}"
+              th:action="@{/admin/events/{id}/close(id=${event.id})}"
+              method="post">
+
+            <button type="submit"
+                    class="btn btn-orange">
+
+                Close Event
+
+            </button>
+
+        </form>
+
+
+        <!-- ====================================== -->
+        <!-- REOPEN EVENT -->
+        <!-- Only visible when event is CLOSED -->
+        <!-- ====================================== -->
+
+        <form th:if="${event.status.name()=='CLOSED'}"
+              th:action="@{/admin/events/{id}/reopen(id=${event.id})}"
+              method="post">
+
+            <button type="submit"
+                    class="btn btn-blue">
+
+                Reopen Event
+
+            </button>
+
+        </form>
+
+
+    </div>
+
+
+    <br>
+
+    <hr>
+
+
+    <!-- ====================================== -->
+    <!-- REGISTRATION SUMMARY -->
+    <!-- ====================================== -->
+
+    <h2>Registration Summary</h2>
+
+
+    <div class="registration-summary">
+
+
+        <p>
+
+            <strong>Event Capacity:</strong>
+
+            <span th:text="${summary.capacity}"></span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Active Registered People:</strong>
+
+            <span th:text="${summary.activeRegisteredPeople}"></span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Remaining Capacity:</strong>
+
+            <span th:text="${summary.remainingCapacity}"></span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Active Registrations:</strong>
+
+            <span th:text="${summary.activeRegistrations}"></span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Cancelled Registrations:</strong>
+
+            <span th:text="${summary.cancelledRegistrations}"></span>
+
+        </p>
+
+
+    </div>
+
+
+    <br>
+
+    <hr>
+
+
+    <!-- ====================================== -->
+    <!-- PARTICIPANTS -->
+    <!-- ====================================== -->
+
+    <h2>Participants</h2>
+
+
+    <!-- ====================================== -->
+    <!-- EXPORT CSV -->
+    <!-- ====================================== -->
+
+    <a class="btn btn-green"
+       th:href="@{/admin/events/{id}/export-csv(id=${event.id})}">
+
+        Export Participants to CSV
+
+    </a>
+
+
+    <br>
+    <br>
+
+
+    <!-- ====================================== -->
+    <!-- REGISTRATION TABLE -->
+    <!-- ====================================== -->
+
+    <div th:if="${!#lists.isEmpty(registrations)}"
+         class="table-wrapper">
+
+
+        <table border="1"
+               cellpadding="10"
+               cellspacing="0">
+
+
+            <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Email</th>
+
+                <th>Phone</th>
+
+                <th>Total</th>
+
+                <th>Vegan Menus</th>
+
+                <th>Vegan Menu Owners</th>
+
+                <th>Status</th>
+
+                <th>Registration Code</th>
+
+                <th>Guests</th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+            <!-- ====================================== -->
+            <!-- LOOP THROUGH REGISTRATIONS -->
+            <!-- ====================================== -->
+
+            <tr th:each="registration : ${registrations}">
+
+
+                <!-- ====================================== -->
+                <!-- NAME -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.name}">
+
+                    Name
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- EMAIL -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.email}">
+
+                    Email
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- PHONE -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.phone}">
+
+                    Phone
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- TOTAL REGISTRATION -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.totalRegistration}">
+
+                    1
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- VEGAN MENU COUNT -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.veganMenuCount != null
+                              ? registration.veganMenuCount
+                              : 0}">
+
+                    0
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- VEGAN MENU OWNERS -->
+                <!-- ====================================== -->
+
+                <td>
+
+
+                    <!-- Vegan menu exists -->
+
+                    <span th:if="${registration.veganMenuCount != null
+                                  and registration.veganMenuCount > 0
+                                  and registration.veganAttendeeNames != null
+                                  and !#strings.isEmpty(registration.veganAttendeeNames)}"
+                          th:text="${registration.veganAttendeeNames}">
+
+                        Vegan Menu Owners
+
+                    </span>
+
+
+                    <!-- No vegan menu -->
+
+                    <span th:if="${registration.veganMenuCount == null
+                                  or registration.veganMenuCount == 0
+                                  or registration.veganAttendeeNames == null
+                                  or #strings.isEmpty(registration.veganAttendeeNames)}">
+
+                        -
+
+                    </span>
+
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- STATUS -->
+                <!-- ====================================== -->
+
+                <td>
+
+
+                    <!-- ACTIVE -->
+
+                    <span th:if="${registration.status.name() == 'ACTIVE'}">
+
+                        🟢 ACTIVE
+
+                    </span>
+
+
+                    <!-- CANCELLED -->
+
+                    <span th:if="${registration.status.name() == 'CANCELLED'}">
+
+                        🔴 CANCELLED
+
+                    </span>
+
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- REGISTRATION CODE -->
+                <!-- ====================================== -->
+
+                <td th:text="${registration.registrationCode}">
+
+                    RG-XXXXXX
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- GUESTS -->
+                <!-- ====================================== -->
+
+                <td>
+
+
+                    <!-- NO GUESTS -->
+
+                    <span th:if="${#lists.isEmpty(registration.guests)}">
+
+                        No guests
+
+                    </span>
+
+
+                    <!-- GUEST LIST -->
+
+                    <ul th:if="${!#lists.isEmpty(registration.guests)}">
+
+
+                        <li th:each="guest : ${registration.guests}"
+                            th:text="${guest.name}">
+
+                            Guest Name
+
+                        </li>
+
+
+                    </ul>
+
+
+                </td>
+
+
+            </tr>
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+    <br>
+
+    <hr>
+
+
+    <!-- ====================================== -->
+    <!-- BACK TO EVENTS -->
+    <!-- ====================================== -->
+
+    <br>
+
+
+    <a class="btn btn-green"
+       th:href="@{/admin/events}">
+
+        Back To Events
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>

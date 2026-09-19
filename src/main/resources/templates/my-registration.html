@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="tr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="#{myRegistration.title}">
+        Kaydım
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- ===================================== -->
+    <!-- LANGUAGE SELECTOR -->
+    <!-- ===================================== -->
+
+    <div class="language-selector">
+
+        <span class="language-icon">
+            🌐
+        </span>
+
+        <a href="?lang=tr">TR</a>
+
+        <span>|</span>
+
+        <a href="?lang=de">DE</a>
+
+        <span>|</span>
+
+        <a href="?lang=en">EN</a>
+
+        <span>|</span>
+
+        <a href="?lang=fr">FR</a>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- PAGE TITLE -->
+    <!-- ===================================== -->
+
+    <h1 th:text="#{myRegistration.title}">
+        Kaydım
+    </h1>
+
+    <hr>
+
+
+    <!-- ===================================== -->
+    <!-- REGISTRATION INFORMATION -->
+    <!-- ===================================== -->
+
+    <h3 th:text="#{myRegistration.registrationInformation}">
+        Kayıt Bilgileri
+    </h3>
+
+    <p>
+
+        <strong th:text="#{myRegistration.registrationCode}">
+            Kayıt Kodu:
+        </strong>
+
+        <span th:text="${registration.registrationCode}">
+        </span>
+
+    </p>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.status}">
+            Durum:
+        </strong>
+
+        <span th:text="${registration.status}">
+        </span>
+
+    </p>
+
+
+    <!-- ===================================== -->
+    <!-- EDIT FORM -->
+    <!-- Only ACTIVE registrations can be edited -->
+    <!-- ===================================== -->
+
+    <div th:if="${registration.status.name() == 'ACTIVE'}">
+
+        <form id="editRegistrationForm">
+
+
+            <!-- ===================================== -->
+            <!-- NAME -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="name"
+                       th:text="#{myRegistration.name}">
+                    Ad Soyad:
+                </label>
+
+                <input type="text"
+                       id="name"
+                       th:value="${registration.name}"
+                       required>
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- EMAIL -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="email"
+                       th:text="#{myRegistration.email}">
+                    E-posta:
+                </label>
+
+                <input type="email"
+                       id="email"
+                       th:value="${registration.email}"
+                       required>
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- PHONE -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="phone"
+                       th:text="#{myRegistration.phone}">
+                    Telefon:
+                </label>
+
+                <input type="text"
+                       id="phone"
+                       th:value="${registration.phone}"
+                       required>
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- GUESTS -->
+            <!-- ===================================== -->
+
+            <h3 th:text="#{myRegistration.guests}">
+                Misafirler
+            </h3>
+
+
+            <div id="guestContainer">
+
+
+                <!-- EXISTING GUESTS -->
+
+                <div class="guest"
+                     th:each="guest : ${registration.guests}">
+
+                    <input type="text"
+                           class="guestName"
+                           th:value="${guest.name}"
+                           required>
+
+                    <button type="button"
+                            class="removeGuestButton"
+                            th:text="#{myRegistration.remove}">
+
+                        Kaldır
+
+                    </button>
+
+                    <br>
+
+                </div>
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- ADD GUEST BUTTON -->
+            <!-- ===================================== -->
+
+            <button type="button"
+                    id="addGuestButton"
+                    th:text="#{myRegistration.addGuest}">
+
+                + Misafir Ekle
+
+            </button>
+
+            <br>
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- TOTAL REGISTRATION -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="totalRegistration"
+                       th:text="#{myRegistration.totalRegistration}">
+                    Toplam Katılımcı:
+                </label>
+
+                <input type="number"
+                       id="totalRegistration"
+                       th:value="${registration.totalRegistration}"
+                       readonly>
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- VEGAN MENU COUNT -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="veganMenuCount"
+                       th:text="#{myRegistration.veganMenuCount}">
+                    Vegan Menü Sayısı:
+                </label>
+
+                <input type="number"
+                       id="veganMenuCount"
+                       min="0"
+                       th:value="${registration.veganMenuCount != null ? registration.veganMenuCount : 0}">
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- VEGAN MENU OWNERS -->
+            <!-- ===================================== -->
+
+            <div>
+
+                <label for="veganAttendeeNames"
+                       th:text="#{myRegistration.veganOwners}">
+                    Vegan Menü Alacak Kişiler:
+                </label>
+
+                <input type="text"
+                       id="veganAttendeeNames"
+                       th:value="${registration.veganAttendeeNames}"
+                       th:placeholder="#{myRegistration.veganPlaceholder}">
+
+            </div>
+
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- SAVE BUTTON -->
+            <!-- ===================================== -->
+
+            <button type="submit"
+                    class="btn btn-green"
+                    th:text="#{myRegistration.saveChanges}">
+
+                Değişiklikleri Kaydet
+
+            </button>
+
+            <br>
+            <br>
+
+
+            <!-- ===================================== -->
+            <!-- CANCEL BUTTON -->
+            <!-- ===================================== -->
+
+            <button type="button"
+                    id="cancelRegistrationButton"
+                    class="btn btn-red"
+                    th:text="#{myRegistration.cancelRegistration}">
+
+                Kaydı İptal Et
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- CANCELLED REGISTRATION -->
+    <!-- ===================================== -->
+
+    <div th:if="${registration.status.name() == 'CANCELLED'}">
+
+        <h3 th:text="#{myRegistration.cancelledTitle}">
+            Kayıt İptal Edildi
+        </h3>
+
+        <p th:text="#{myRegistration.cancelledDescription}">
+            Bu kayıt iptal edilmiştir.
+        </p>
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- ===================================== -->
+    <!-- EVENT INFORMATION -->
+    <!-- ===================================== -->
+
+    <h3 th:text="#{myRegistration.eventInformation}">
+        Etkinlik Bilgileri
+    </h3>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.event}">
+            Etkinlik:
+        </strong>
+
+        <span th:text="${registration.eventName}">
+        </span>
+
+    </p>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.eventCode}">
+            Etkinlik Kodu:
+        </strong>
+
+        <span th:text="${registration.eventCode}">
+        </span>
+
+    </p>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.date}">
+            Tarih:
+        </strong>
+
+        <span th:text="${registration.eventDate}">
+        </span>
+
+    </p>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.time}">
+            Saat:
+        </strong>
+
+        <span th:text="${registration.eventTime}">
+        </span>
+
+    </p>
+
+
+    <p>
+
+        <strong th:text="#{myRegistration.address}">
+            Adres:
+        </strong>
+
+        <span th:text="${registration.eventAddress}">
+        </span>
+
+    </p>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================== -->
+
+<script th:inline="javascript">
+
+
+    // =========================================
+    // REGISTRATION INFORMATION
+    // =========================================
+
+    const registrationCode =
+        /*[[${registration.registrationCode}]]*/ "";
+
+
+    /*
+     * Event'te şu anda boş olan yer sayısı.
+     */
+    const remainingCapacity =
+        /*[[${remainingCapacity}]]*/ 0;
+
+
+    /*
+     * Kullanıcının mevcut registration'ı.
+     */
+    const originalTotalRegistration =
+        /*[[${registration.totalRegistration}]]*/ 1;
+
+
+    /*
+     * Kullanıcı edit yaparken kendi mevcut yerlerini
+     * kaybetmemeli.
+     *
+     * Örneğin:
+     *
+     * originalTotalRegistration = 2
+     * remainingCapacity = 2
+     *
+     * maximumAllowedTotal = 4
+     */
+    const maximumAllowedTotal =
+        originalTotalRegistration + remainingCapacity;
+
+
+    // =========================================
+    // TRANSLATED JAVASCRIPT MESSAGES
+    // =========================================
+
+    const messageMaximumPart1 =
+        /*[[#{myRegistration.js.maximumPart1}]]*/
+        "Daha fazla misafir ekleyemezsiniz.";
+
+    const messageMaximumPart2 =
+        /*[[#{myRegistration.js.maximumPart2}]]*/
+        "Maksimum kayıt sayısı";
+
+    const messageMaximumPart3 =
+        /*[[#{myRegistration.js.maximumPart3}]]*/
+        "kişidir.";
+
+    const messageGuestName =
+        /*[[#{myRegistration.js.guestName}]]*/
+        "Misafir adı";
+
+    const messageRemove =
+        /*[[#{myRegistration.remove}]]*/
+        "Kaldır";
+
+    const messageVeganCount =
+        /*[[#{myRegistration.js.veganCount}]]*/
+        "Vegan menü sayısı toplam katılımcı sayısından fazla olamaz.";
+
+    const messageVeganNames =
+        /*[[#{myRegistration.js.veganNames}]]*/
+        "Lütfen vegan menü alacak kişilerin isimlerini girin.";
+
+    const messageUpdateSuccess =
+        /*[[#{myRegistration.js.updateSuccess}]]*/
+        "Kayıt başarıyla güncellendi.";
+
+    const messageUpdateFailed =
+        /*[[#{myRegistration.js.updateFailed}]]*/
+        "Kayıt güncellenemedi.";
+
+    const messageUnexpectedError =
+        /*[[#{myRegistration.js.unexpectedError}]]*/
+        "Beklenmeyen bir hata oluştu.";
+
+    const messageCancelConfirm =
+        /*[[#{myRegistration.js.cancelConfirm}]]*/
+        "Kaydınızı iptal etmek istediğinizden emin misiniz?";
+
+    const messageCancelSuccess =
+        /*[[#{myRegistration.js.cancelSuccess}]]*/
+        "Kayıt başarıyla iptal edildi.";
+
+    const messageCancelFailed =
+        /*[[#{myRegistration.js.cancelFailed}]]*/
+        "Kayıt iptal edilemedi.";
+
+
+    // =========================================
+    // FIND HTML ELEMENTS
+    // =========================================
+
+    const editRegistrationForm =
+        document.getElementById(
+            "editRegistrationForm"
+        );
+
+
+    const addGuestButton =
+        document.getElementById(
+            "addGuestButton"
+        );
+
+
+    const cancelRegistrationButton =
+        document.getElementById(
+            "cancelRegistrationButton"
+        );
+
+
+    const veganMenuCountInput =
+        document.getElementById(
+            "veganMenuCount"
+        );
+
+
+    // =========================================
+    // UPDATE TOTAL REGISTRATION
+    // =========================================
+
+    function updateTotalRegistration() {
+
+        const totalRegistrationInput =
+            document.getElementById(
+                "totalRegistration"
+            );
+
+
+        /*
+         * Registration CANCELLED ise
+         * edit form olmadığı için
+         * totalRegistration input da olmayacaktır.
+         */
+
+        if (totalRegistrationInput === null) {
+
+            return;
+
+        }
+
+
+        const guestInputs =
+            document.querySelectorAll(
+                ".guestName"
+            );
+
+
+        /*
+         * Registrant = 1 kişi
+         *
+         * Total Registration =
+         *
+         * 1 + guest sayısı
+         */
+
+        const total =
+            1 + guestInputs.length;
+
+
+        totalRegistrationInput.value =
+            total;
+
+
+        /*
+         * Vegan menu sayısı toplam kayıt sayısından
+         * büyük olamaz.
+         */
+
+        if (veganMenuCountInput !== null) {
+
+            veganMenuCountInput.max =
+                total;
+
+
+            const currentVeganCount =
+                parseInt(
+                    veganMenuCountInput.value
+                ) || 0;
+
+
+            /*
+             * Guest silindiğinde total düşerse
+             * vegan sayısı da total'i geçmemeli.
+             */
+
+            if (currentVeganCount > total) {
+
+                veganMenuCountInput.value =
+                    total;
+
+            }
+
+        }
+
+    }
+
+
+    // =========================================
+    // REMOVE EXISTING GUEST
+    // =========================================
+
+    const removeButtons =
+        document.querySelectorAll(
+            ".removeGuestButton"
+        );
+
+
+    removeButtons.forEach(
+
+        function (button) {
+
+            button.addEventListener(
+
+                "click",
+
+                function () {
+
+                    const guestDiv =
+                        button.closest(
+                            ".guest"
+                        );
+
+
+                    guestDiv.remove();
+
+
+                    /*
+                     * Guest silindikten sonra
+                     * total tekrar hesaplanır.
+                     */
+
+                    updateTotalRegistration();
+
+                }
+
+            );
+
+        }
+
+    );
+
+
+    // =========================================
+    // ADD NEW GUEST
+    // =========================================
+
+    if (addGuestButton !== null) {
+
+        addGuestButton.addEventListener(
+
+            "click",
+
+            function () {
+
+
+                // =================================
+                // CURRENT REGISTRATION SIZE
+                // =================================
+
+                const currentGuestCount =
+                    document.querySelectorAll(
+                        ".guestName"
+                    ).length;
+
+
+                /*
+                 * Registrant kendisi = 1 kişi
+                 */
+
+                const currentTotalRegistration =
+                    1 + currentGuestCount;
+
+
+                // =================================
+                // CAPACITY CONTROL
+                // =================================
+
+                if (
+                    currentTotalRegistration
+                    >= maximumAllowedTotal
+                ) {
+
+                    alert(
+                        messageMaximumPart1 +
+                        " " +
+                        messageMaximumPart2 +
+                        " " +
+                        maximumAllowedTotal +
+                        " " +
+                        messageMaximumPart3
+                    );
+
+                    return;
+
+                }
+
+
+                // =================================
+                // FIND GUEST CONTAINER
+                // =================================
+
+                const guestContainer =
+                    document.getElementById(
+                        "guestContainer"
+                    );
+
+
+                // =================================
+                // CREATE GUEST DIV
+                // =================================
+
+                const guestDiv =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                guestDiv.classList.add(
+                    "guest"
+                );
+
+
+                // =================================
+                // CREATE GUEST INPUT
+                // =================================
+
+                const guestInput =
+                    document.createElement(
+                        "input"
+                    );
+
+
+                guestInput.type =
+                    "text";
+
+
+                guestInput.placeholder =
+                    messageGuestName;
+
+
+                guestInput.classList.add(
+                    "guestName"
+                );
+
+
+                guestInput.required =
+                    true;
+
+
+                // =================================
+                // CREATE REMOVE BUTTON
+                // =================================
+
+                const removeButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                removeButton.type =
+                    "button";
+
+
+                removeButton.textContent =
+                    messageRemove;
+
+
+                removeButton.classList.add(
+                    "removeGuestButton"
+                );
+
+
+                // =================================
+                // REMOVE NEWLY CREATED GUEST
+                // =================================
+
+                removeButton.addEventListener(
+
+                    "click",
+
+                    function () {
+
+                        guestDiv.remove();
+
+
+                        updateTotalRegistration();
+
+                    }
+
+                );
+
+
+                // =================================
+                // ADD INPUT TO GUEST DIV
+                // =================================
+
+                guestDiv.appendChild(
+                    guestInput
+                );
+
+
+                // =================================
+                // ADD REMOVE BUTTON
+                // =================================
+
+                guestDiv.appendChild(
+                    removeButton
+                );
+
+
+                // =================================
+                // ADD LINE BREAK
+                // =================================
+
+                guestDiv.appendChild(
+                    document.createElement(
+                        "br"
+                    )
+                );
+
+
+                // =================================
+                // ADD GUEST DIV TO PAGE
+                // =================================
+
+                guestContainer.appendChild(
+                    guestDiv
+                );
+
+
+                // =================================
+                // RECALCULATE TOTAL
+                // =================================
+
+                updateTotalRegistration();
+
+            }
+
+        );
+
+    }
+
+
+    // =========================================
+    // SAVE CHANGES
+    // =========================================
+
+    if (editRegistrationForm !== null) {
+
+        editRegistrationForm.addEventListener(
+
+            "submit",
+
+            async function (event) {
+
+
+                event.preventDefault();
+
+
+                // =================================
+                // CREATE GUEST ARRAY
+                // =================================
+
+                const guestInputs =
+                    document.querySelectorAll(
+                        ".guestName"
+                    );
+
+
+                const guests = [];
+
+
+                guestInputs.forEach(
+
+                    function (input) {
+
+                        guests.push({
+
+                            name:
+                                input.value.trim()
+
+                        });
+
+                    }
+
+                );
+
+
+                // =================================
+                // TOTAL REGISTRATION
+                // =================================
+
+                const totalRegistration =
+                    parseInt(
+
+                        document
+                            .getElementById(
+                                "totalRegistration"
+                            )
+                            .value
+
+                    );
+
+
+                // =================================
+                // VEGAN MENU COUNT
+                // =================================
+
+                const veganCount =
+                    parseInt(
+
+                        document
+                            .getElementById(
+                                "veganMenuCount"
+                            )
+                            .value
+
+                    ) || 0;
+
+
+                // =================================
+                // VEGAN MENU OWNERS
+                // =================================
+
+                const veganNames =
+                    document
+                        .getElementById(
+                            "veganAttendeeNames"
+                        )
+                        .value
+                        .trim();
+
+
+                // =================================
+                // VEGAN VALIDATION
+                // =================================
+
+                if (veganCount > totalRegistration) {
+
+                    alert(
+                        messageVeganCount
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    veganCount > 0
+                    &&
+                    veganNames === ""
+                ) {
+
+                    alert(
+                        messageVeganNames
+                    );
+
+                    return;
+
+                }
+
+
+                // =================================
+                // CREATE UPDATE DATA
+                // =================================
+
+                const updateData = {
+
+
+                    name:
+                        document
+                            .getElementById(
+                                "name"
+                            )
+                            .value
+                            .trim(),
+
+
+                    email:
+                        document
+                            .getElementById(
+                                "email"
+                            )
+                            .value
+                            .trim(),
+
+
+                    phone:
+                        document
+                            .getElementById(
+                                "phone"
+                            )
+                            .value
+                            .trim(),
+
+
+                    totalRegistration:
+                        totalRegistration,
+
+
+                    veganMenuCount:
+                        veganCount,
+
+
+                    veganAttendeeNames:
+                        veganNames,
+
+
+                    guests:
+                        guests
+
+                };
+
+
+                // =================================
+                // SEND PUT REQUEST
+                // =================================
+
+                try {
+
+                    const response =
+                        await fetch(
+
+                            "/api/registration/"
+                            + registrationCode,
+
+                            {
+
+                                method:
+                                    "PUT",
+
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+
+                                body:
+                                    JSON.stringify(
+                                        updateData
+                                    )
+
+                            }
+
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    // =================================
+                    // UPDATE SUCCESS
+                    // =================================
+
+                    if (response.ok) {
+
+                        alert(
+                            messageUpdateSuccess
+                        );
+
+
+                        window.location.reload();
+
+                    }
+
+
+                    // =================================
+                    // UPDATE ERROR
+                    // =================================
+
+                    else {
+
+                        alert(
+
+                            result.message
+                            ||
+                            messageUpdateFailed
+
+                        );
+
+                    }
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    alert(
+                        messageUnexpectedError
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+    // =========================================
+    // CANCEL REGISTRATION
+    // =========================================
+
+    if (cancelRegistrationButton !== null) {
+
+        cancelRegistrationButton.addEventListener(
+
+            "click",
+
+            async function () {
+
+
+                /*
+                 * Kullanıcıya iptal etmeden önce soruyoruz.
+                 */
+
+                const confirmed =
+                    confirm(
+                        messageCancelConfirm
+                    );
+
+
+                if (!confirmed) {
+
+                    return;
+
+                }
+
+
+                // =================================
+                // SEND CANCEL REQUEST
+                // =================================
+
+                try {
+
+                    const response =
+                        await fetch(
+
+                            "/api/registration/"
+                            + registrationCode
+                            + "/cancel",
+
+                            {
+
+                                method:
+                                    "PUT"
+
+                            }
+
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    // =================================
+                    // CANCEL SUCCESS
+                    // =================================
+
+                    if (response.ok) {
+
+                        alert(
+                            messageCancelSuccess
+                        );
+
+
+                        window.location.reload();
+
+                    }
+
+
+                    // =================================
+                    // CANCEL ERROR
+                    // =================================
+
+                    else {
+
+                        alert(
+
+                            result.message
+                            ||
+                            messageCancelFailed
+
+                        );
+
+                    }
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    alert(
+                        messageUnexpectedError
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+    // =========================================
+    // INITIAL CALCULATION
+    // =========================================
+
+    updateTotalRegistration();
+
+
+</script>
+
+
+</body>
+
+</html>

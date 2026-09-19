@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Events</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+<body>
+<div class="container">
+<h1>Events</h1>
+
+<a th:href="@{/admin/events/create}">
+    Create New Event
+</a>
+
+<br><br>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+<br><br>
+    <div class="table-wrapper">
+<table>
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Event Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Address</th>
+        <th>Capacity</th>
+        <th>Event Code</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:each="event : ${events}">
+
+        <td th:text="${event.id}"></td>
+
+        <td>
+            <a th:href="@{/admin/events/{id}(id=${event.id})}"
+               th:text="${event.eventName}">
+            </a>
+        </td>
+
+        <td th:text="${event.date}"></td>
+
+        <td th:text="${event.time}"></td>
+
+        <td th:text="${event.address}"></td>
+
+        <td th:text="${event.numberOfAttendees}"></td>
+
+        <td th:text="${event.eventCode}"></td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="#{find.title}">
+        Kayıt Bul
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- ====================================== -->
+    <!-- LANGUAGE SELECTOR -->
+    <!-- ====================================== -->
+
+    <div class="language-selector">
+
+        <span class="language-icon">
+            🌐
+        </span>
+
+        <a th:href="@{/my-registration(lang='tr')}">
+            TR
+        </a>
+
+        <span>|</span>
+
+        <a th:href="@{/my-registration(lang='de')}">
+            DE
+        </a>
+
+        <span>|</span>
+
+        <a th:href="@{/my-registration(lang='en')}">
+            EN
+        </a>
+
+        <span>|</span>
+
+        <a th:href="@{/my-registration(lang='fr')}">
+            FR
+        </a>
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- PAGE TITLE -->
+    <!-- ====================================== -->
+
+    <h1 th:text="#{find.title}">
+        Kaydımı Bul
+    </h1>
+
+
+    <p th:text="#{find.description}">
+        Kaydınızı görüntülemek veya güncellemek için
+        kayıt kodunuzu girin.
+    </p>
+
+
+    <br>
+
+
+    <!-- ====================================== -->
+    <!-- FIND REGISTRATION FORM -->
+    <!-- ====================================== -->
+
+    <form th:action="@{/my-registration/find}"
+          method="get">
+
+        <div>
+
+            <label for="registrationCode">
+
+                <strong th:text="#{find.registrationCode}">
+                    Kayıt Kodu:
+                </strong>
+
+            </label>
+
+
+            <input type="text"
+                   id="registrationCode"
+                   name="registrationCode"
+                   th:placeholder="#{find.registrationCode.placeholder}"
+                   required>
+
+        </div>
+
+
+        <br>
+
+
+        <button type="submit"
+                class="btn btn-green"
+                th:text="#{find.button}">
+
+            Kaydı Bul
+
+        </button>
+
+    </form>
+
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Edit Event</title>
+</head>
+
+<body>
+
+<h1>Edit Event</h1>
+
+<form th:action="@{/admin/events/{id}/edit(id=${event.id})}"
+      th:object="${event}"
+      method="post">
+
+    <div>
+        <label>Event Name:</label>
+        <input type="text" th:field="*{eventName}">
+    </div>
+
+    <br>
+
+    <div>
+        <label>Date:</label>
+        <input type="date" th:field="*{date}">
+    </div>
+
+    <br>
+
+    <div>
+        <label>Time:</label>
+        <input type="time" th:field="*{time}">
+    </div>
+
+    <br>
+
+    <div>
+        <label>Address:</label>
+        <input type="text" th:field="*{address}">
+    </div>
+
+    <div>
+        <label>Important Information:</label>
+        <br>
+        <textarea th:field="*{importantInformation}"
+                  rows="5"
+                  cols="50">
+    </textarea>
+    </div>
+
+    <br>
+
+    <br>
+
+    <div>
+        <label>Number of Attendees:</label>
+        <input type="number" th:field="*{numberOfAttendees}">
+    </div>
+
+    <br>
+
+    <div>
+        <label>Final Acceptance Date:</label>
+        <input type="datetime-local"
+               name="finalAcceptanceDate"
+               th:value="${#temporals.format(event.finalAcceptanceDate, 'yyyy-MM-dd''T''HH:mm')}">
+    </div>
+
+    <br>
+
+    <button type="submit">Update Event</button>
+
+</form>
+
+</body>
+</html>
