@@ -136,6 +136,14 @@ public class RegistrationService {
 
             savedRegistration.setEmailSent(false);
 
+            System.out.println(
+                    "Confirmation email could not be sent: "
+                            + e.getClass().getName()
+                            + " - "
+                            + e.getMessage()
+            );
+
+            e.printStackTrace();
         }
 
         registrationRepository.save(savedRegistration);
