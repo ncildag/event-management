@@ -1,19 +1,26 @@
 package com.tpe.service;
 
+import com.resend.Resend;
+import com.resend.services.emails.model.CreateEmailOptions;
 import com.tpe.domain.Registration;
-import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final Resend resend;
+
     @Value("${app.base-url}")
     private String appBaseUrl;
+
+    @Value("${resend.from-email}")
+    private String fromEmail;
+
+    public EmailService(@Value("${resend.api-key}") String apiKey) {
+        this.resend = new Resend(apiKey);
+    }
+
 
     public void sendRegistrationConfirmation(Registration registration) {
 
@@ -22,16 +29,11 @@ public class EmailService {
                         + "/my-registration/"
                         + registration.getRegistrationCode();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(registration.getEmail());
-
-        message.setSubject(
+        String subject =
                 "Kayıt Onayı / Anmeldebestätigung / Registration Confirmation - "
-                        + registration.getEvent().getEventName()
-        );
+                        + registration.getEvent().getEventName();
 
-        message.setText(
+        String text =
 
                 // =========================
                 // TÜRKÇE
@@ -123,11 +125,11 @@ public class EmailService {
                         "Thank you for your registration.\n\n" +
 
                         "Best regards,\n" +
-                        "Event Management"
-        );
+                        "Event Management";
 
-        mailSender.send(message);
+        sendEmail(registration.getEmail(), subject, text);
     }
+
 
     public void sendRegistrationUpdate(Registration registration) {
 
@@ -136,16 +138,11 @@ public class EmailService {
                         + "/my-registration/"
                         + registration.getRegistrationCode();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(registration.getEmail());
-
-        message.setSubject(
+        String subject =
                 "Kayıt Güncellendi / Anmeldung aktualisiert / Registration Updated - "
-                        + registration.getEvent().getEventName()
-        );
+                        + registration.getEvent().getEventName();
 
-        message.setText(
+        String text =
 
                 // =========================
                 // TÜRKÇE
@@ -231,24 +228,19 @@ public class EmailService {
                         registrationUrl + "\n\n" +
 
                         "Best regards,\n" +
-                        "Event Management"
-        );
+                        "Event Management";
 
-        mailSender.send(message);
+        sendEmail(registration.getEmail(), subject, text);
     }
+
 
     public void sendRegistrationCancellation(Registration registration) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(registration.getEmail());
-
-        message.setSubject(
+        String subject =
                 "Kayıt İptal Edildi / Anmeldung storniert / Registration Cancelled - "
-                        + registration.getEvent().getEventName()
-        );
+                        + registration.getEvent().getEventName();
 
-        message.setText(
+        String text =
 
                 // =========================
                 // TÜRKÇE
@@ -325,11 +317,28 @@ public class EmailService {
                         "If you would like to attend again, you can create a new registration.\n\n" +
 
                         "Best regards,\n" +
-                        "Event Management"
-        );
+                        "Event Management";
 
-        mailSender.send(message);
+        sendEmail(registration.getEmail(), subject, text);
     }
+
+
+    private void sendEmail(String to, String subject, String text) {
+
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("Event Management <" + fromEmail + ">")
+                .to(to)
+                .subject(subject)
+                .text(text)
+                .build();
+
+        try {
+            resend.emails().send(params);
+        } catch (Exception e) {
+            throw new RuntimeException("Email could not be sent via Resend", e);
+        }
+    }
+
 
     private String formatVeganNames(Registration registration) {
 

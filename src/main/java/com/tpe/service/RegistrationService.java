@@ -308,8 +308,13 @@ public class RegistrationService {
         } catch (Exception e) {
 
             System.out.println(
-                    "Update email could not be sent: " + e.getMessage()
+                    "Update email could not be sent: "
+                            + e.getClass().getName()
+                            + " - "
+                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
 
         return getRegistrationByCode(registrationCode);
