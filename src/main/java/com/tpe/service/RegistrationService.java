@@ -31,13 +31,13 @@ public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final GuestRepository guestRepository;
-    private final EmailService emailService;
+    //private final EmailService emailService;
 
 
     @Transactional
     public Registration createRegistration(
             String eventCode,
-            RegistrationCreateDTO dto){
+            RegistrationCreateDTO dto) {
 
         Event event = eventRepository
                 .findByEventCodeWithLock(eventCode)
@@ -45,15 +45,15 @@ public class RegistrationService {
                         new ResourceNotFoundException(
                                 "Event not found."));
 
-        if(event.getStatus() == EventStatus.CLOSED){
+        if (event.getStatus() == EventStatus.CLOSED) {
 
             throw new IllegalStateException(
                     "This event is closed.");
 
         }
 
-        if(LocalDateTime.now()
-                .isAfter(event.getFinalAcceptanceDate())){
+        if (LocalDateTime.now()
+                .isAfter(event.getFinalAcceptanceDate())) {
 
             throw new IllegalStateException(
                     "Registration deadline has passed.");
@@ -85,7 +85,6 @@ public class RegistrationService {
         }
 
         Registration registration = new Registration();
-
 
 
         Integer veganMenuCount =
@@ -123,7 +122,7 @@ public class RegistrationService {
             guest.setRegistration(registration);
             registration.getGuests().add(guest);
         }
-        Registration savedRegistration =
+        /*Registration savedRegistration =
                 registrationRepository.save(registration);
 
         try {
@@ -149,8 +148,13 @@ public class RegistrationService {
         registrationRepository.save(savedRegistration);
 
         return savedRegistration;
-    }
+    }*/
 
+        Registration savedRegistration =
+                registrationRepository.save(registration);
+
+        return savedRegistration;
+    }
 
     public RegistrationResponseDTO getRegistrationByCode(
             String registrationCode) {
@@ -298,7 +302,7 @@ public class RegistrationService {
             registration.getGuests().add(guest);
         }
 
-        Registration savedRegistration =
+        /*Registration savedRegistration =
                 registrationRepository.save(registration);
 
         try {
@@ -318,7 +322,14 @@ public class RegistrationService {
         }
 
         return getRegistrationByCode(registrationCode);
+    }*/
+
+        registrationRepository.save(registration);
+
+        return getRegistrationByCode(registrationCode);
+
     }
+
 
     @Transactional
     public RegistrationResponseDTO cancelRegistration(
@@ -345,7 +356,7 @@ public class RegistrationService {
 
         registration.setStatus(RegistrationStatus.CANCELLED);
 
-        Registration savedRegistration =
+        /*Registration savedRegistration =
                 registrationRepository.save(registration);
 
         try {
@@ -357,6 +368,12 @@ public class RegistrationService {
         }
 
         return getRegistrationByCode(registrationCode);
+    }*/
+
+        registrationRepository.save(registration);
+
+        return getRegistrationByCode(registrationCode);
+
     }
 
     public List<RegistrationResponseDTO> getRegistrationsByEventId(
