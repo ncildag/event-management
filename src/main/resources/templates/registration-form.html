@@ -248,9 +248,9 @@
             <div id="guestContainer">
 
                 <!--
-                    Guest input fields
-                    will be added here
-                    with JavaScript.
+                     Guest input fields
+                     will be added here
+                     with JavaScript.
                 -->
 
             </div>
@@ -290,50 +290,60 @@
 
 
             <!-- ===================================== -->
-            <!-- VEGAN MENU COUNT -->
+            <!-- VEGAN OPTIONS -->
+            <!-- Only shown when enabled by admin -->
             <!-- ===================================== -->
 
-            <div>
-
-                <label for="veganMenuCount"
-                       th:text="#{registration.veganMenuCount}">
-                    Vegan Menü Sayısı:
-                </label>
-
-                <input type="number"
-                       id="veganMenuCount"
-                       name="veganMenuCount"
-                       value="0"
-                       min="0">
-
-            </div>
-
-            <br>
+            <div th:if="${event.veganOptionEnabled}">
 
 
-            <!-- ===================================== -->
-            <!-- VEGAN ATTENDEE NAMES -->
-            <!-- Only visible when veganMenuCount > 0 -->
-            <!-- ===================================== -->
+                <!-- ===================================== -->
+                <!-- VEGAN MENU COUNT -->
+                <!-- ===================================== -->
 
-            <div id="veganNamesContainer"
-                 style="display: none;">
+                <div>
 
-                <label for="veganAttendeeNames"
-                       th:text="#{registration.veganNames}">
-                    Vegan menü alacak kişilerin isimleri:
-                </label>
+                    <label for="veganMenuCount"
+                           th:text="#{registration.veganMenuCount}">
+                        Vegan Menü Sayısı:
+                    </label>
+
+                    <input type="number"
+                           id="veganMenuCount"
+                           name="veganMenuCount"
+                           value="0"
+                           min="0">
+
+                </div>
 
                 <br>
 
-                <input type="text"
-                       id="veganAttendeeNames"
-                       name="veganAttendeeNames"
-                       th:placeholder="#{registration.veganNames.placeholder}">
+
+                <!-- ===================================== -->
+                <!-- VEGAN ATTENDEE NAMES -->
+                <!-- Only visible when veganMenuCount > 0 -->
+                <!-- ===================================== -->
+
+                <div id="veganNamesContainer"
+                     style="display: none;">
+
+                    <label for="veganAttendeeNames"
+                           th:text="#{registration.veganNames}">
+                        Vegan menü alacak kişilerin isimleri:
+                    </label>
+
+                    <br>
+
+                    <input type="text"
+                           id="veganAttendeeNames"
+                           name="veganAttendeeNames"
+                           th:placeholder="#{registration.veganNames.placeholder}">
+
+                </div>
+
+                <br>
 
             </div>
-
-            <br>
 
 
             <!-- ===================================== -->
@@ -365,6 +375,11 @@
 
     const remainingCapacity =
         /*[[${remainingCapacity}]]*/ 0;
+
+    // Determines whether the vegan fields
+    // are enabled for this event.
+    const veganOptionEnabled =
+        /*[[${event.veganOptionEnabled}]]*/ false;
 
 
     // =========================================
@@ -447,7 +462,15 @@
     // Show/hide attendee name field
     // =========================================
 
-    if (veganMenuCount !== null) {
+    if (
+        veganOptionEnabled
+        &&
+        veganMenuCount !== null
+        &&
+        veganNamesContainer !== null
+        &&
+        veganAttendeeNames !== null
+    ) {
 
         veganMenuCount.addEventListener(
             "input",
@@ -662,7 +685,11 @@
         // Vegan menu count cannot be
         // greater than total registration
 
-        if (veganMenuCount !== null) {
+        if (
+            veganOptionEnabled
+            &&
+            veganMenuCount !== null
+        ) {
 
             veganMenuCount.max =
                 totalRegistration;
@@ -699,18 +726,40 @@
 
 
                 // =================================
-                // VEGAN VALIDATION
+                // VEGAN VALUES
                 // =================================
 
-                const veganCount =
-                    parseInt(
-                        document
-                            .getElementById(
-                                "veganMenuCount"
-                            )
-                            .value
-                    ) || 0;
+                /*
+                 * If vegan option is disabled
+                 * for this event:
+                 *
+                 * veganMenuCount = 0
+                 * veganAttendeeNames = null
+                 */
 
+                const veganCount =
+                    veganOptionEnabled
+                    &&
+                    veganMenuCount !== null
+                        ? parseInt(
+                            veganMenuCount.value
+                        ) || 0
+                        : 0;
+
+
+                const veganNames =
+                    veganOptionEnabled
+                    &&
+                    veganAttendeeNames !== null
+                        ? veganAttendeeNames
+                            .value
+                            .trim()
+                        : null;
+
+
+                // =================================
+                // VEGAN VALIDATION
+                // =================================
 
                 const total =
                     parseInt(
@@ -732,19 +781,14 @@
                 }
 
 
-                const veganNames =
-                    document
-                        .getElementById(
-                            "veganAttendeeNames"
-                        )
-                        .value
-                        .trim();
-
-
                 if (
                     veganCount > 0
                     &&
-                    veganNames === ""
+                    (
+                        veganNames === null
+                        ||
+                        veganNames === ""
+                    )
                 ) {
 
                     alert(

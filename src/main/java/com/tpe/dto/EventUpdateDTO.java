@@ -21,6 +21,8 @@ public class EventUpdateDTO {
 
     private String importantInformation;
 
+    private Boolean veganOptionEnabled;
+
     private Integer numberOfAttendees;
 
     private LocalDateTime finalAcceptanceDate;

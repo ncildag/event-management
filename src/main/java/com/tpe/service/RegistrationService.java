@@ -87,22 +87,47 @@ public class RegistrationService {
         Registration registration = new Registration();
 
 
-        Integer veganMenuCount =
-                dto.getVeganMenuCount() == null
-                        ? 0
-                        : dto.getVeganMenuCount();
+        // Vegan option is controlled by the event.
+// If the admin disabled it, vegan values are ignored
+// even if they are manually sent through the API.
 
-        if (veganMenuCount > dto.getTotalRegistration()) {
-            throw new IllegalStateException(
-                    "Vegan menu count cannot be greater than total registration.");
-        }
+        Integer veganMenuCount;
+        String veganAttendeeNames;
 
-        if (veganMenuCount > 0 &&
-                (dto.getVeganAttendeeNames() == null ||
-                        dto.getVeganAttendeeNames().isBlank())) {
+        if (Boolean.TRUE.equals(event.getVeganOptionEnabled())) {
 
-            throw new IllegalStateException(
-                    "Please enter the names of the attendees who will have the vegan menu.");
+            veganMenuCount =
+                    dto.getVeganMenuCount() == null
+                            ? 0
+                            : dto.getVeganMenuCount();
+
+            veganAttendeeNames =
+                    dto.getVeganAttendeeNames();
+
+            if (veganMenuCount > dto.getTotalRegistration()) {
+
+                throw new IllegalStateException(
+                        "Vegan menu count cannot be greater than total registration.");
+            }
+
+            if (veganMenuCount > 0 &&
+                    (veganAttendeeNames == null ||
+                            veganAttendeeNames.isBlank())) {
+
+                throw new IllegalStateException(
+                        "Please enter the names of the attendees who will have the vegan menu.");
+            }
+
+            // If no vegan menu is selected,
+            // there is no need to store attendee names.
+            if (veganMenuCount == 0) {
+                veganAttendeeNames = null;
+            }
+
+        } else {
+
+            veganMenuCount = 0;
+            veganAttendeeNames = null;
         }
 
         registration.setRegistrationCode(generateRegistrationCode());
@@ -111,7 +136,7 @@ public class RegistrationService {
         registration.setPhone(dto.getPhone());
         registration.setTotalRegistration(dto.getTotalRegistration());
         registration.setVeganMenuCount(veganMenuCount);
-        registration.setVeganAttendeeNames(dto.getVeganAttendeeNames());
+        registration.setVeganAttendeeNames(veganAttendeeNames);
         registration.setRegisteredAt(LocalDateTime.now());
         registration.setStatus(RegistrationStatus.ACTIVE);
         registration.setEvent(event);
@@ -252,22 +277,45 @@ public class RegistrationService {
                     "Total registration must be equal to the registrant plus the number of guests.");
         }
 
-        Integer veganMenuCount =
-                dto.getVeganMenuCount() == null
-                        ? 0
-                        : dto.getVeganMenuCount();
+        // Vegan option is controlled by the event.
+// If the admin disabled it, vegan values are ignored
+// even if they are manually sent through the API.
 
-        if (veganMenuCount > dto.getTotalRegistration()) {
-            throw new IllegalStateException(
-                    "Vegan menu count cannot be greater than total registration.");
-        }
+        Integer veganMenuCount;
+        String veganAttendeeNames;
 
-        if (veganMenuCount > 0 &&
-                (dto.getVeganAttendeeNames() == null ||
-                        dto.getVeganAttendeeNames().isBlank())) {
+        if (Boolean.TRUE.equals(event.getVeganOptionEnabled())) {
 
-            throw new IllegalStateException(
-                    "Please enter the names of the attendees who will have the vegan menu.");
+            veganMenuCount =
+                    dto.getVeganMenuCount() == null
+                            ? 0
+                            : dto.getVeganMenuCount();
+
+            veganAttendeeNames =
+                    dto.getVeganAttendeeNames();
+
+            if (veganMenuCount > dto.getTotalRegistration()) {
+
+                throw new IllegalStateException(
+                        "Vegan menu count cannot be greater than total registration.");
+            }
+
+            if (veganMenuCount > 0 &&
+                    (veganAttendeeNames == null ||
+                            veganAttendeeNames.isBlank())) {
+
+                throw new IllegalStateException(
+                        "Please enter the names of the attendees who will have the vegan menu.");
+            }
+
+            if (veganMenuCount == 0) {
+                veganAttendeeNames = null;
+            }
+
+        } else {
+
+            veganMenuCount = 0;
+            veganAttendeeNames = null;
         }
 
         Long currentTotal =
@@ -289,7 +337,7 @@ public class RegistrationService {
         registration.setPhone(dto.getPhone());
         registration.setTotalRegistration(dto.getTotalRegistration());
         registration.setVeganMenuCount(veganMenuCount);
-        registration.setVeganAttendeeNames(dto.getVeganAttendeeNames());
+        registration.setVeganAttendeeNames(veganAttendeeNames);
         registration.getGuests().clear();
 
         for (GuestDTO guestDTO : dto.getGuests()) {

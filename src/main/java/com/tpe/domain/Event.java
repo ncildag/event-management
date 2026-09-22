@@ -43,6 +43,9 @@ public class Event {
     private String importantInformation;
 
     @Column(nullable = false)
+    private Boolean veganOptionEnabled = true;
+
+    @Column(nullable = false)
     private LocalDateTime finalAcceptanceDate;
 
     @Column(nullable = false)

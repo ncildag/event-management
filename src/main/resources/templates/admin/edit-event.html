@@ -43,16 +43,26 @@
         <input type="text" th:field="*{address}">
     </div>
 
+    <br>
+
     <div>
         <label>Important Information:</label>
         <br>
         <textarea th:field="*{importantInformation}"
                   rows="5"
                   cols="50">
-    </textarea>
+        </textarea>
     </div>
 
     <br>
+
+    <div>
+        <label>
+            <input type="checkbox"
+                   th:field="*{veganOptionEnabled}">
+            Ask for vegan menu information
+        </label>
+    </div>
 
     <br>
 

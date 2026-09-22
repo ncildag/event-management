@@ -21,6 +21,8 @@ public class EventCreateDTO {
 
     private String importantInformation;
 
+    private Boolean veganOptionEnabled = true;
+
     private Integer numberOfAttendees;
 
     private LocalDateTime finalAcceptanceDate;

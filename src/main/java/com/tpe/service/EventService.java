@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.tpe.dto.EventUpdateDTO;
 import com.tpe.domain.enums.EventStatus;
 import com.tpe.repository.RegistrationRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +32,7 @@ public class EventService {
         event.setTime(dto.getTime());
         event.setAddress(dto.getAddress());
         event.setImportantInformation(dto.getImportantInformation());
+        event.setVeganOptionEnabled(dto.getVeganOptionEnabled());
         event.setNumberOfAttendees(dto.getNumberOfAttendees());
         event.setFinalAcceptanceDate(dto.getFinalAcceptanceDate());
 
@@ -74,6 +76,7 @@ public class EventService {
     }
 
     //Update event ------------------------
+    @Transactional
     public Event updateEvent(Long id, EventUpdateDTO dto) {
 
         // 1. Find event
@@ -91,7 +94,7 @@ public class EventService {
                         .getTotalRegistrationByEventId(id);
 
 
-        // 3. Ney capacity can't be less than current active registrations
+        // 3. New capacity can't be less than current active registrations
         if (dto.getNumberOfAttendees()
                 < activeRegisteredPeople.intValue()) {
 
@@ -101,17 +104,33 @@ public class EventService {
         }
 
 
-        // 4. Update event
+        // 4. Check whether vegan option is being disabled
+        boolean veganOptionDisabled =
+                !Boolean.TRUE.equals(dto.getVeganOptionEnabled());
+
+
+        // 5. Update event
         event.setEventName(dto.getEventName());
         event.setDate(dto.getDate());
         event.setTime(dto.getTime());
         event.setAddress(dto.getAddress());
         event.setImportantInformation(dto.getImportantInformation());
+        event.setVeganOptionEnabled(dto.getVeganOptionEnabled());
         event.setNumberOfAttendees(dto.getNumberOfAttendees());
         event.setFinalAcceptanceDate(dto.getFinalAcceptanceDate());
 
 
-        // 5. Save in db.
+        // 6. If vegan option is disabled,
+        // remove existing vegan information
+        // from all registrations of this event.
+        if (veganOptionDisabled) {
+
+            registrationRepository
+                    .resetVeganInformationByEventId(id);
+        }
+
+
+        // 7. Save in db.
         return eventRepository.save(event);
     }
 
