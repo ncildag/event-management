@@ -335,6 +335,10 @@
 
                 <th>Guests</th>
 
+                <th>Child</th>
+
+                <th>Child under 3 years</th>
+
             </tr>
 
             </thead>
@@ -512,6 +516,52 @@
 
                     </ul>
 
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- CHILD COUNT -->
+                <!-- ====================================== -->
+
+                <td>
+
+                    <span th:text="${
+                        #lists.isEmpty(registration.guests)
+                        ? 0
+                        : #lists.size(
+                            registration.guests.?[
+                                child != null and child
+                            ]
+                        )
+                    }">
+
+                        0
+
+                    </span>
+
+                </td>
+
+
+                <!-- ====================================== -->
+                <!-- CHILD UNDER 3 COUNT -->
+                <!-- ====================================== -->
+
+                <td>
+
+                    <span th:text="${
+                        #lists.isEmpty(registration.guests)
+                        ? 0
+                        : #lists.size(
+                            registration.guests.?[
+                                underThree != null and underThree
+                            ]
+                        )
+                    }">
+
+                        0
+
+                    </span>
 
                 </td>
 

@@ -376,10 +376,23 @@
     const remainingCapacity =
         /*[[${remainingCapacity}]]*/ 0;
 
+
     // Determines whether the vegan fields
     // are enabled for this event.
     const veganOptionEnabled =
         /*[[${event.veganOptionEnabled}]]*/ false;
+
+
+    // Determines whether child information
+    // is requested for guests.
+    const askChild =
+        /*[[${event.askChild}]]*/ false;
+
+
+    // Determines whether the under 3 question
+    // is requested for child guests.
+    const askUnderThree =
+        /*[[${event.askUnderThree}]]*/ false;
 
 
     // =========================================
@@ -556,7 +569,9 @@
                 }
 
 
-                // Create guest div
+                // =========================================
+                // CREATE GUEST DIV
+                // =========================================
 
                 const guestDiv =
                     document.createElement(
@@ -568,7 +583,9 @@
                 );
 
 
-                // Create guest input
+                // =========================================
+                // CREATE GUEST NAME INPUT
+                // =========================================
 
                 const guestInput =
                     document.createElement(
@@ -589,7 +606,169 @@
                     true;
 
 
-                // Create remove button
+                guestDiv.appendChild(
+                    guestInput
+                );
+
+
+                // =========================================
+                // CHILD AGE INFORMATION
+                // =========================================
+
+                if (askChild) {
+
+                    const childContainer =
+                        document.createElement(
+                            "div"
+                        );
+
+                    childContainer.style.marginTop =
+                        "8px";
+
+
+                    // Child checkbox
+
+                    const childCheckbox =
+                        document.createElement(
+                            "input"
+                        );
+
+                    childCheckbox.type =
+                        "checkbox";
+
+                    childCheckbox.classList.add(
+                        "guestChild"
+                    );
+
+
+                    // Child label
+
+                    const childLabel =
+                        document.createElement(
+                            "label"
+                        );
+
+                    childLabel.appendChild(
+                        childCheckbox
+                    );
+
+                    childLabel.appendChild(
+                        document.createTextNode(
+                            " Child under 10 years old"
+                        )
+                    );
+
+
+                    childContainer.appendChild(
+                        childLabel
+                    );
+
+                    guestDiv.appendChild(
+                        childContainer
+                    );
+
+
+                    // =====================================
+                    // UNDER 3 INFORMATION
+                    // =====================================
+
+                    if (askUnderThree) {
+
+                        const underThreeContainer =
+                            document.createElement(
+                                "div"
+                            );
+
+                        underThreeContainer.style.marginLeft =
+                            "25px";
+
+                        underThreeContainer.style.marginTop =
+                            "5px";
+
+                        underThreeContainer.style.display =
+                            "none";
+
+
+                        const underThreeCheckbox =
+                            document.createElement(
+                                "input"
+                            );
+
+                        underThreeCheckbox.type =
+                            "checkbox";
+
+                        underThreeCheckbox.classList.add(
+                            "guestUnderThree"
+                        );
+
+
+                        const underThreeLabel =
+                            document.createElement(
+                                "label"
+                            );
+
+                        underThreeLabel.appendChild(
+                            underThreeCheckbox
+                        );
+
+                        underThreeLabel.appendChild(
+                            document.createTextNode(
+                                " Under 3 years old"
+                            )
+                        );
+
+
+                        underThreeContainer.appendChild(
+                            underThreeLabel
+                        );
+
+                        guestDiv.appendChild(
+                            underThreeContainer
+                        );
+
+
+                        // =================================
+                        // CHILD CHECKBOX CHANGE
+                        // =================================
+
+                        childCheckbox.addEventListener(
+                            "change",
+                            function () {
+
+                                if (
+                                    childCheckbox.checked
+                                ) {
+
+                                    underThreeContainer
+                                        .style
+                                        .display =
+                                        "block";
+
+                                } else {
+
+                                    /*
+                                     * A guest cannot be
+                                     * under 3 without also
+                                     * being a child.
+                                     */
+
+                                    underThreeCheckbox.checked =
+                                        false;
+
+                                    underThreeContainer
+                                        .style
+                                        .display =
+                                        "none";
+                                }
+                            }
+                        );
+                    }
+                }
+
+
+                // =========================================
+                // CREATE REMOVE BUTTON
+                // =========================================
 
                 const removeButton =
                     document.createElement(
@@ -603,7 +782,9 @@
                     messageRemove;
 
 
-                // Remove guest
+                // =========================================
+                // REMOVE GUEST
+                // =========================================
 
                 removeButton.addEventListener(
                     "click",
@@ -617,11 +798,9 @@
                 );
 
 
-                // Add elements to guest div
-
-                guestDiv.appendChild(
-                    guestInput
-                );
+                // =========================================
+                // ADD REMOVE BUTTON
+                // =========================================
 
                 guestDiv.appendChild(
                     removeButton
@@ -634,14 +813,18 @@
                 );
 
 
-                // Add guest to page
+                // =========================================
+                // ADD GUEST TO PAGE
+                // =========================================
 
                 guestContainer.appendChild(
                     guestDiv
                 );
 
 
-                // Update total
+                // =========================================
+                // UPDATE TOTAL
+                // =========================================
 
                 updateTotalRegistration();
 
@@ -803,22 +986,80 @@
                 // CREATE GUEST LIST
                 // =================================
 
-                const guestInputs =
+                const guestDivs =
                     document.querySelectorAll(
-                        ".guestName"
+                        ".guest"
                     );
 
 
                 const guests = [];
 
 
-                guestInputs.forEach(
-                    function (input) {
+                guestDivs.forEach(
+                    function (guestDiv) {
+
+                        const nameInput =
+                            guestDiv.querySelector(
+                                ".guestName"
+                            );
+
+
+                        const childCheckbox =
+                            guestDiv.querySelector(
+                                ".guestChild"
+                            );
+
+
+                        const underThreeCheckbox =
+                            guestDiv.querySelector(
+                                ".guestUnderThree"
+                            );
+
+
+                        /*
+                         * If askChild is disabled,
+                         * child is always false.
+                         */
+
+                        const child =
+                            askChild
+                            &&
+                            childCheckbox !== null
+                            &&
+                            childCheckbox.checked;
+
+
+                        /*
+                         * Under 3 can only be true
+                         * when:
+                         *
+                         * 1. Guest is a child
+                         * 2. Admin enabled askUnderThree
+                         * 3. Checkbox is selected
+                         */
+
+                        const underThree =
+                            child
+                            &&
+                            askUnderThree
+                            &&
+                            underThreeCheckbox !== null
+                            &&
+                            underThreeCheckbox.checked;
+
 
                         guests.push({
 
                             name:
-                                input.value.trim()
+                                nameInput
+                                    .value
+                                    .trim(),
+
+                            child:
+                                child,
+
+                            underThree:
+                                underThree
 
                         });
 

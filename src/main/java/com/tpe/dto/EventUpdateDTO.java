@@ -23,6 +23,12 @@ public class EventUpdateDTO {
 
     private Boolean veganOptionEnabled;
 
+    // Determines whether the child question is enabled for this event.
+    private Boolean askChild;
+
+    // Determines whether the under 3 question is enabled for this event.
+    private Boolean askUnderThree;
+
     private Integer numberOfAttendees;
 
     private LocalDateTime finalAcceptanceDate;

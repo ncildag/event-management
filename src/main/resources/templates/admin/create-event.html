@@ -67,6 +67,30 @@
         </label>
     </div>
 
+    <!-- Guest age options -->
+    <div>
+        <label>
+            <input type="checkbox"
+                   id="askChild"
+                   th:field="*{askChild}"
+                   onchange="handleChildOption()">
+            Ask if guest is a child under 10 years old
+        </label>
+    </div>
+
+    <div id="underThreeOption"
+         style="margin-left: 25px;"
+         th:style="${event.askChild} ? 'margin-left:25px;' : 'margin-left:25px; display:none;'">
+
+        <label>
+            <input type="checkbox"
+                   id="askUnderThree"
+                   th:field="*{askUnderThree}">
+            Ask if child is under 3 years old
+        </label>
+
+    </div>
+
     <br>
 
     <br>
@@ -92,6 +116,37 @@
     </button>
 
 </form>
+
+<script>
+    function handleChildOption() {
+
+        const askChild =
+            document.getElementById("askChild");
+
+        const askUnderThree =
+            document.getElementById("askUnderThree");
+
+        const underThreeOption =
+            document.getElementById("underThreeOption");
+
+        if (askChild.checked) {
+
+            underThreeOption.style.display = "block";
+
+        } else {
+
+            // If child question is disabled,
+            // under 3 cannot remain enabled.
+            askUnderThree.checked = false;
+
+            underThreeOption.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        handleChildOption();
+    });
+</script>
 
 </body>
 </html>

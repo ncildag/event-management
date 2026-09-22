@@ -88,8 +88,8 @@ public class RegistrationService {
 
 
         // Vegan option is controlled by the event.
-// If the admin disabled it, vegan values are ignored
-// even if they are manually sent through the API.
+    // If the admin disabled it, vegan values are ignored
+    // even if they are manually sent through the API.
 
         Integer veganMenuCount;
         String veganAttendeeNames;
@@ -142,9 +142,23 @@ public class RegistrationService {
         registration.setEvent(event);
 
         for (GuestDTO guestDTO : dto.getGuests()) {
+
             Guest guest = new Guest();
+
+            boolean child =
+                    Boolean.TRUE.equals(event.getAskChild())
+                            && Boolean.TRUE.equals(guestDTO.getChild());
+
+            boolean underThree =
+                    child
+                            && Boolean.TRUE.equals(event.getAskUnderThree())
+                            && Boolean.TRUE.equals(guestDTO.getUnderThree());
+
             guest.setName(guestDTO.getName());
+            guest.setChild(child);
+            guest.setUnderThree(underThree);
             guest.setRegistration(registration);
+
             registration.getGuests().add(guest);
         }
         /*Registration savedRegistration =
@@ -213,6 +227,8 @@ public class RegistrationService {
             GuestDTO guestDTO = new GuestDTO();
 
             guestDTO.setName(guest.getName());
+            guestDTO.setChild(guest.getChild());
+            guestDTO.setUnderThree(guest.getUnderThree());
 
             dto.getGuests().add(guestDTO);
         }
@@ -278,8 +294,8 @@ public class RegistrationService {
         }
 
         // Vegan option is controlled by the event.
-// If the admin disabled it, vegan values are ignored
-// even if they are manually sent through the API.
+    // If the admin disabled it, vegan values are ignored
+    // even if they are manually sent through the API.
 
         Integer veganMenuCount;
         String veganAttendeeNames;
@@ -344,7 +360,18 @@ public class RegistrationService {
 
             Guest guest = new Guest();
 
+            boolean child =
+                    Boolean.TRUE.equals(event.getAskChild())
+                            && Boolean.TRUE.equals(guestDTO.getChild());
+
+            boolean underThree =
+                    child
+                            && Boolean.TRUE.equals(event.getAskUnderThree())
+                            && Boolean.TRUE.equals(guestDTO.getUnderThree());
+
             guest.setName(guestDTO.getName());
+            guest.setChild(child);
+            guest.setUnderThree(underThree);
             guest.setRegistration(registration);
 
             registration.getGuests().add(guest);
@@ -515,6 +542,14 @@ public class RegistrationService {
 
                 guestDTO.setName(
                         guest.getName()
+                );
+
+                guestDTO.setChild(
+                        guest.getChild()
+                );
+
+                guestDTO.setUnderThree(
+                        guest.getUnderThree()
                 );
 
                 dto.getGuests().add(

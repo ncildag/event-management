@@ -33,6 +33,13 @@ public class EventService {
         event.setAddress(dto.getAddress());
         event.setImportantInformation(dto.getImportantInformation());
         event.setVeganOptionEnabled(dto.getVeganOptionEnabled());
+        event.setAskChild(
+                Boolean.TRUE.equals(dto.getAskChild())
+        );
+        event.setAskUnderThree(
+                Boolean.TRUE.equals(dto.getAskChild())
+                        && Boolean.TRUE.equals(dto.getAskUnderThree())
+        );
         event.setNumberOfAttendees(dto.getNumberOfAttendees());
         event.setFinalAcceptanceDate(dto.getFinalAcceptanceDate());
 
@@ -115,7 +122,20 @@ public class EventService {
         event.setTime(dto.getTime());
         event.setAddress(dto.getAddress());
         event.setImportantInformation(dto.getImportantInformation());
-        event.setVeganOptionEnabled(dto.getVeganOptionEnabled());
+
+        event.setVeganOptionEnabled(
+                Boolean.TRUE.equals(dto.getVeganOptionEnabled())
+        );
+
+        event.setAskChild(
+                Boolean.TRUE.equals(dto.getAskChild())
+        );
+
+        event.setAskUnderThree(
+                Boolean.TRUE.equals(dto.getAskChild())
+                        && Boolean.TRUE.equals(dto.getAskUnderThree())
+        );
+
         event.setNumberOfAttendees(dto.getNumberOfAttendees());
         event.setFinalAcceptanceDate(dto.getFinalAcceptanceDate());
 

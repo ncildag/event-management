@@ -45,6 +45,16 @@ public class Event {
     @Column(nullable = false)
     private Boolean veganOptionEnabled = true;
 
+    // Determines whether the "child under 10 years old" question
+    // is shown for guests on the registration form.
+    @Column(nullable = false)
+    private Boolean askChild = false;
+
+    // Determines whether the "under 3 years old" question
+    // is shown for child guests on the registration form.
+    @Column(nullable = false)
+    private Boolean askUnderThree = false;
+
     @Column(nullable = false)
     private LocalDateTime finalAcceptanceDate;
 
