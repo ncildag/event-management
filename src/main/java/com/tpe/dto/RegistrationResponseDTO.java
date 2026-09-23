@@ -31,7 +31,24 @@ public class RegistrationResponseDTO {
 
     private List<GuestDTO> guests = new ArrayList<>();
 
-    // Event information
+
+    // =========================================
+    // EVENT REGISTRATION OPTIONS
+    // =========================================
+
+    // Determines whether the child question
+    // should be shown for guests.
+    private Boolean askChild;
+
+    // Determines whether the under 3 question
+    // should be shown for child guests.
+    private Boolean askUnderThree;
+
+
+    // =========================================
+    // EVENT INFORMATION
+    // =========================================
+
     private String eventCode;
 
     private String eventName;

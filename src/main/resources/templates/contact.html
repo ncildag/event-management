@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="#{contact.title}">
+        Contact Us
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- ===================================== -->
+    <!-- LANGUAGE SELECTOR -->
+    <!-- ===================================== -->
+
+    <div class="language-selector">
+
+        <span class="language-icon">
+            🌐
+        </span>
+
+        <a href="?lang=tr">
+            TR
+        </a>
+
+        <span>|</span>
+
+        <a href="?lang=de">
+            DE
+        </a>
+
+        <span>|</span>
+
+        <a href="?lang=en">
+            EN
+        </a>
+
+        <span>|</span>
+
+        <a href="?lang=fr">
+            FR
+        </a>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- CONTACT US -->
+    <!-- ===================================== -->
+
+    <h1 th:text="#{contact.title}">
+        Contact Us
+    </h1>
+
+    <hr>
+
+
+    <p th:text="#{contact.description}">
+        If you have a question or need help,
+        please send us a message.
+    </p>
+
+
+    <!-- ===================================== -->
+    <!-- SUCCESS MESSAGE -->
+    <!-- ===================================== -->
+
+    <div id="successMessage"
+         style="display: none;">
+
+        <p th:text="#{contact.success}">
+            Your message has been sent successfully.
+        </p>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- ERROR MESSAGE -->
+    <!-- ===================================== -->
+
+    <div id="errorMessage"
+         style="display: none;">
+
+        <p id="errorMessageText"
+           th:text="#{contact.error}">
+            Your message could not be sent.
+        </p>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- CONTACT FORM -->
+    <!-- ===================================== -->
+
+    <form id="contactForm">
+
+
+        <!-- ===================================== -->
+        <!-- NAME -->
+        <!-- ===================================== -->
+
+        <div>
+
+            <label for="name"
+                   th:text="#{contact.name}">
+                Name:
+            </label>
+
+            <input type="text"
+                   id="name"
+                   name="name"
+                   minlength="2"
+                   maxlength="50"
+                   required>
+
+        </div>
+
+        <br>
+
+
+        <!-- ===================================== -->
+        <!-- EMAIL -->
+        <!-- ===================================== -->
+
+        <div>
+
+            <label for="email"
+                   th:text="#{contact.email}">
+                Email:
+            </label>
+
+            <input type="email"
+                   id="email"
+                   name="email"
+                   minlength="5"
+                   maxlength="20"
+                   required>
+
+        </div>
+
+        <br>
+
+
+        <!-- ===================================== -->
+        <!-- SUBJECT -->
+        <!-- ===================================== -->
+
+        <div>
+
+            <label for="subject"
+                   th:text="#{contact.subject}">
+                Subject:
+            </label>
+
+            <input type="text"
+                   id="subject"
+                   name="subject"
+                   minlength="4"
+                   maxlength="50"
+                   required>
+
+        </div>
+
+        <br>
+
+
+        <!-- ===================================== -->
+        <!-- MESSAGE -->
+        <!-- ===================================== -->
+
+        <div>
+
+            <label for="message"
+                   th:text="#{contact.message}">
+                Message:
+            </label>
+
+            <br>
+
+            <textarea id="message"
+                      name="message"
+                      rows="7"
+                      minlength="4"
+                      maxlength="1000"
+                      required></textarea>
+
+        </div>
+
+        <br>
+
+
+        <!-- ===================================== -->
+        <!-- SEND BUTTON -->
+        <!-- ===================================== -->
+
+        <button type="submit"
+                class="btn btn-green"
+                th:text="#{contact.send}">
+            Send Message
+        </button>
+
+
+    </form>
+
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================== -->
+
+<script th:inline="javascript">
+
+
+    // =========================================
+    // TRANSLATED JAVASCRIPT MESSAGES
+    // =========================================
+
+    const messageContactError =
+        /*[[#{contact.error}]]*/
+        "Your message could not be sent.";
+
+    const messageUnexpectedError =
+        /*[[#{contact.unexpectedError}]]*/
+        "An unexpected error occurred.";
+
+
+    // =========================================
+    // FIND ELEMENTS
+    // =========================================
+
+    const contactForm =
+        document.getElementById(
+            "contactForm"
+        );
+
+    const successMessage =
+        document.getElementById(
+            "successMessage"
+        );
+
+    const errorMessage =
+        document.getElementById(
+            "errorMessage"
+        );
+
+    const errorMessageText =
+        document.getElementById(
+            "errorMessageText"
+        );
+
+
+    // =========================================
+    // SUBMIT CONTACT MESSAGE
+    // =========================================
+
+    contactForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            // =================================
+            // HIDE OLD MESSAGES
+            // =================================
+
+            successMessage.style.display =
+                "none";
+
+            errorMessage.style.display =
+                "none";
+
+
+            // =================================
+            // CREATE REQUEST DATA
+            // =================================
+
+            const contactData = {
+
+                name:
+                    document
+                        .getElementById(
+                            "name"
+                        )
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById(
+                            "email"
+                        )
+                        .value
+                        .trim(),
+
+                subject:
+                    document
+                        .getElementById(
+                            "subject"
+                        )
+                        .value
+                        .trim(),
+
+                message:
+                    document
+                        .getElementById(
+                            "message"
+                        )
+                        .value
+                        .trim()
+
+            };
+
+
+            // =================================
+            // SEND TO SPRING BOOT
+            // =================================
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/contact-messages",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    contactData
+                                )
+
+                        }
+                    );
+
+
+                // =================================
+                // SUCCESS
+                // =================================
+
+                if (response.ok) {
+
+                    successMessage.style.display =
+                        "block";
+
+                    contactForm.reset();
+
+                    return;
+                }
+
+
+                // =================================
+                // BACKEND ERROR
+                // =================================
+
+                const result =
+                    await response.json();
+
+
+                /*
+                 * Validation errors from
+                 * GlobalExceptionHandler:
+                 *
+                 * {
+                 *     "name": "...",
+                 *     "email": "...",
+                 *     ...
+                 * }
+                 *
+                 * Other errors may contain:
+                 *
+                 * {
+                 *     "message": "..."
+                 * }
+                 */
+
+                if (result.message) {
+
+                    errorMessageText.textContent =
+                        result.message;
+
+                } else {
+
+                    const validationMessages =
+                        Object.values(
+                            result
+                        );
+
+                    if (
+                        validationMessages.length > 0
+                    ) {
+
+                        errorMessageText.textContent =
+                            validationMessages.join(
+                                " "
+                            );
+
+                    } else {
+
+                        errorMessageText.textContent =
+                            messageContactError;
+
+                    }
+                }
+
+
+                errorMessage.style.display =
+                    "block";
+
+            }
+
+
+            // =================================
+            // CONNECTION ERROR
+            // =================================
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+                errorMessageText.textContent =
+                    messageUnexpectedError;
+
+                errorMessage.style.display =
+                    "block";
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

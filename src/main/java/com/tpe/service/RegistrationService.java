@@ -216,6 +216,22 @@ public class RegistrationService {
         dto.setVeganAttendeeNames(registration.getVeganAttendeeNames());
         dto.setStatus(registration.getStatus());
 
+        // =========================================
+        // EVENT REGISTRATION OPTIONS
+        // =========================================
+
+        dto.setAskChild(
+                registration.getEvent().getAskChild()
+        );
+
+        dto.setAskUnderThree(
+                registration.getEvent().getAskUnderThree()
+        );
+
+        // =========================================
+        // EVENT INFORMATION
+        // =========================================
+
         dto.setEventCode(registration.getEvent().getEventCode());
         dto.setEventName(registration.getEvent().getEventName());
         dto.setEventDate(registration.getEvent().getDate());

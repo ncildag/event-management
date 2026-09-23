@@ -33,19 +33,35 @@
             🌐
         </span>
 
-        <a href="?lang=tr">TR</a>
+        <a href="?lang=tr">
+            TR
+        </a>
 
         <span>|</span>
 
-        <a href="?lang=de">DE</a>
+        <a href="?lang=de">
+            DE
+        </a>
 
         <span>|</span>
 
-        <a href="?lang=en">EN</a>
+        <a href="?lang=en">
+            EN
+        </a>
 
         <span>|</span>
 
-        <a href="?lang=fr">FR</a>
+        <a href="?lang=fr">
+            FR
+        </a>
+
+        <span>|</span>
+
+        <a th:href="@{/contact}"
+           class="contact-link"
+           th:text="#{contact.link}">
+            Contact Us
+        </a>
 
     </div>
 
@@ -178,15 +194,74 @@
             <div id="guestContainer">
 
 
+                <!-- ===================================== -->
                 <!-- EXISTING GUESTS -->
+                <!-- ===================================== -->
 
                 <div class="guest"
                      th:each="guest : ${registration.guests}">
+
+
+                    <!-- ================================= -->
+                    <!-- GUEST NAME -->
+                    <!-- ================================= -->
 
                     <input type="text"
                            class="guestName"
                            th:value="${guest.name}"
                            required>
+
+
+                    <!-- ================================= -->
+                    <!-- CHILD -->
+                    <!-- ================================= -->
+
+                    <div th:if="${registration.askChild}"
+                         style="margin-top: 8px;">
+
+                        <label>
+
+                            <input type="checkbox"
+                                   class="guestChild"
+                                   th:checked="${guest.child}">
+
+                            <span th:text="#{myRegistration.child}">
+                                Child under 10 years old
+                            </span>
+
+                        </label>
+
+
+                        <!-- ================================= -->
+                        <!-- UNDER 3 -->
+                        <!-- ================================= -->
+
+                        <div class="underThreeContainer"
+                             th:if="${registration.askUnderThree}"
+                             th:style="${guest.child}
+                             ? 'margin-left: 25px; margin-top: 5px; display: block;'
+                             : 'margin-left: 25px; margin-top: 5px; display: none;'">
+
+                            <label>
+
+                                <input type="checkbox"
+                                       class="guestUnderThree"
+                                       th:checked="${guest.underThree}">
+
+                                <span th:text="#{myRegistration.underThree}">
+                                    Under 3 years old
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================= -->
+                    <!-- REMOVE GUEST -->
+                    <!-- ================================= -->
 
                     <button type="button"
                             class="removeGuestButton"
@@ -440,6 +515,20 @@
 
 
     /*
+     * Event'te Child sorusu aktif mi?
+     */
+    const askChild =
+        /*[[${registration.askChild}]]*/ false;
+
+
+    /*
+     * Event'te Under 3 sorusu aktif mi?
+     */
+    const askUnderThree =
+        /*[[${registration.askUnderThree}]]*/ false;
+
+
+    /*
      * Kullanıcı edit yaparken kendi mevcut yerlerini
      * kaybetmemeli.
      *
@@ -473,6 +562,20 @@
     const messageGuestName =
         /*[[#{myRegistration.js.guestName}]]*/
         "Misafir adı";
+
+
+    /*
+     * Child ve Under 3 yazıları da
+     * seçilen dile göre properties dosyasından gelir.
+     */
+    const messageChild =
+        /*[[#{myRegistration.child}]]*/
+        "Child under 10 years old";
+
+    const messageUnderThree =
+        /*[[#{myRegistration.underThree}]]*/
+        "Under 3 years old";
+
 
     const messageRemove =
         /*[[#{myRegistration.remove}]]*/
@@ -621,6 +724,123 @@
 
 
     // =========================================
+    // CHILD / UNDER 3 CONTROL
+    // =========================================
+
+    function configureChildControl(
+        guestDiv
+    ) {
+
+        const childCheckbox =
+            guestDiv.querySelector(
+                ".guestChild"
+            );
+
+        const underThreeCheckbox =
+            guestDiv.querySelector(
+                ".guestUnderThree"
+            );
+
+        const underThreeContainer =
+            guestDiv.querySelector(
+                ".underThreeContainer"
+            );
+
+
+        /*
+         * Event'te Child sorusu kapalıysa
+         * checkbox bulunmaz.
+         */
+
+        if (childCheckbox === null) {
+
+            return;
+
+        }
+
+
+        childCheckbox.addEventListener(
+
+            "change",
+
+            function () {
+
+
+                // =================================
+                // CHILD SELECTED
+                // =================================
+
+                if (childCheckbox.checked) {
+
+                    if (underThreeContainer !== null) {
+
+                        underThreeContainer.style.display =
+                            "block";
+
+                    }
+
+                }
+
+
+                // =================================
+                // CHILD NOT SELECTED
+                // =================================
+
+                else {
+
+                    if (underThreeContainer !== null) {
+
+                        underThreeContainer.style.display =
+                            "none";
+
+                    }
+
+
+                    /*
+                     * Child seçimi kaldırılırsa
+                     * Under 3 de false olmalı.
+                     */
+
+                    if (underThreeCheckbox !== null) {
+
+                        underThreeCheckbox.checked =
+                            false;
+
+                    }
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+    // =========================================
+    // EXISTING GUEST CHILD / UNDER 3 CONTROL
+    // =========================================
+
+    const existingGuests =
+        document.querySelectorAll(
+            ".guest"
+        );
+
+
+    existingGuests.forEach(
+
+        function (guestDiv) {
+
+            configureChildControl(
+                guestDiv
+            );
+
+        }
+
+    );
+
+
+    // =========================================
     // REMOVE EXISTING GUEST
     // =========================================
 
@@ -746,7 +966,7 @@
 
 
                 // =================================
-                // CREATE GUEST INPUT
+                // CREATE GUEST NAME INPUT
                 // =================================
 
                 const guestInput =
@@ -770,6 +990,159 @@
 
                 guestInput.required =
                     true;
+
+
+                guestDiv.appendChild(
+                    guestInput
+                );
+
+
+                // =================================
+                // CHILD OPTION
+                // =================================
+
+                if (askChild === true) {
+
+                    const childContainer =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    childContainer.style.marginTop =
+                        "8px";
+
+
+                    const childLabel =
+                        document.createElement(
+                            "label"
+                        );
+
+
+                    const childCheckbox =
+                        document.createElement(
+                            "input"
+                        );
+
+
+                    childCheckbox.type =
+                        "checkbox";
+
+
+                    childCheckbox.classList.add(
+                        "guestChild"
+                    );
+
+
+                    childLabel.appendChild(
+                        childCheckbox
+                    );
+
+
+                    /*
+                     * Hardcoded English yerine
+                     * seçilen dildeki mesaj kullanılır.
+                     */
+                    childLabel.appendChild(
+                        document.createTextNode(
+                            " " + messageChild
+                        )
+                    );
+
+
+                    childContainer.appendChild(
+                        childLabel
+                    );
+
+
+                    // =================================
+                    // UNDER 3 OPTION
+                    // =================================
+
+                    if (askUnderThree === true) {
+
+                        const underThreeContainer =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        underThreeContainer.classList.add(
+                            "underThreeContainer"
+                        );
+
+
+                        underThreeContainer.style.marginLeft =
+                            "25px";
+
+
+                        underThreeContainer.style.marginTop =
+                            "5px";
+
+
+                        /*
+                         * Başlangıçta Child seçili olmadığı
+                         * için Under 3 gizlidir.
+                         */
+
+                        underThreeContainer.style.display =
+                            "none";
+
+
+                        const underThreeLabel =
+                            document.createElement(
+                                "label"
+                            );
+
+
+                        const underThreeCheckbox =
+                            document.createElement(
+                                "input"
+                            );
+
+
+                        underThreeCheckbox.type =
+                            "checkbox";
+
+
+                        underThreeCheckbox.classList.add(
+                            "guestUnderThree"
+                        );
+
+
+                        underThreeLabel.appendChild(
+                            underThreeCheckbox
+                        );
+
+
+                        /*
+                         * Hardcoded English yerine
+                         * seçilen dildeki mesaj kullanılır.
+                         */
+                        underThreeLabel.appendChild(
+                            document.createTextNode(
+                                " " + messageUnderThree
+                            )
+                        );
+
+
+                        underThreeContainer.appendChild(
+                            underThreeLabel
+                        );
+
+
+                        childContainer.appendChild(
+                            underThreeContainer
+                        );
+
+                    }
+
+
+                    guestDiv.appendChild(
+                        childContainer
+                    );
+
+                }
 
 
                 // =================================
@@ -816,15 +1189,6 @@
 
 
                 // =================================
-                // ADD INPUT TO GUEST DIV
-                // =================================
-
-                guestDiv.appendChild(
-                    guestInput
-                );
-
-
-                // =================================
                 // ADD REMOVE BUTTON
                 // =================================
 
@@ -849,6 +1213,16 @@
                 // =================================
 
                 guestContainer.appendChild(
+                    guestDiv
+                );
+
+
+                /*
+                 * Yeni oluşturulan guest için de
+                 * Child -> Under 3 davranışını bağla.
+                 */
+
+                configureChildControl(
                     guestDiv
                 );
 
@@ -886,23 +1260,79 @@
                 // CREATE GUEST ARRAY
                 // =================================
 
-                const guestInputs =
+                const guestDivs =
                     document.querySelectorAll(
-                        ".guestName"
+                        ".guest"
                     );
 
 
                 const guests = [];
 
 
-                guestInputs.forEach(
+                guestDivs.forEach(
 
-                    function (input) {
+                    function (guestDiv) {
+
+                        const nameInput =
+                            guestDiv.querySelector(
+                                ".guestName"
+                            );
+
+
+                        const childCheckbox =
+                            guestDiv.querySelector(
+                                ".guestChild"
+                            );
+
+
+                        const underThreeCheckbox =
+                            guestDiv.querySelector(
+                                ".guestUnderThree"
+                            );
+
+
+                        /*
+                         * Child checkbox yoksa:
+                         *
+                         * Event'te Child sorusu
+                         * aktif değildir.
+                         */
+
+                        const child =
+                            childCheckbox !== null
+                            &&
+                            childCheckbox.checked;
+
+
+                        /*
+                         * Under 3 sadece:
+                         *
+                         * Child = true
+                         *
+                         * ve
+                         *
+                         * Under 3 checkbox seçilmişse
+                         * true olabilir.
+                         */
+
+                        const underThree =
+                            child
+                            &&
+                            underThreeCheckbox !== null
+                            &&
+                            underThreeCheckbox.checked;
+
 
                         guests.push({
 
                             name:
-                                input.value.trim()
+                                nameInput.value.trim(),
+
+                            child:
+                                child,
+
+                            underThree:
+                                underThree
 
                         });
 
